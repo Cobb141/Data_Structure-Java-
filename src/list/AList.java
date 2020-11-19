@@ -101,4 +101,12 @@ public class AList implements List{
             return listArray[i];
         } 
     }
+
+    public static void main(String[] args)throws Exception{
+        AList l = new AList(100);
+        l.append(10);
+        l.append(20);
+        l.print();
+    }
 }
+

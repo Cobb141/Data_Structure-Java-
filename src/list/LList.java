@@ -92,6 +92,23 @@ public class LList implements List{
         }
     }
 
+    public String print2(){
+        StringBuilder s = new StringBuilder();
+        if(isEmpty()){
+            System.out.println("List is empty");
+            return null;
+        }
+        else{
+            Node curr = head;
+            while(curr.next()!=null){
+                curr = curr.next();
+                s.append(curr.getElem() + " ");
+                //System.out.print(curr.getElem() + " ");
+            }
+            return s.toString();
+        }
+    }
+
     @Override
     public int indexOf(Object item) {
         int i = 0;
