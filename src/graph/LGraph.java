@@ -2,7 +2,7 @@ package graph;
 
 import list.*;
 public class LGraph implements Graph{
-    private int[][] matrix;
+    private GraphList[] vertex;
     private int numEdge;
     private int[] mark;
 
@@ -15,6 +15,7 @@ public class LGraph implements Graph{
             vert2 = vt2;
             itself = it;
         }
+
         @Override
         public int edgeFrom() {
             return vert1;
@@ -28,11 +29,13 @@ public class LGraph implements Graph{
         public Node getItself(){ return itself; }
     }
 
-    public MGragh(){
+    public void LGragh(){
     }
-    public MGragh(int n){
+    public void LGragh(int n){
         mark = new int[n];
-        matrix = new int[n][n];
+        vertex = new GraphList[n];
+        for(int i=0;i<n;i++)
+            vertex[i] = new GraphList();
         numEdge = 0;
     }
 
@@ -48,36 +51,34 @@ public class LGraph implements Graph{
 
     @Override
     public Edge first(int v) {
-        if(v>=mark.length || v<0){
-            System.out.println("Illegal vertex");
-            return null;
-        }
-        for(int i=0;i<mark.length;i++){
-            if(matrix[v][i]!=0)
-                return new MEdge(v, i);
-        }
-        return null;
+        vertex[v].setFirst();
+        if(vertex[v].currValue()==null) return null;
+        return new LEdge(v, ((int[])vertex[v].currValue())[0], vertex[v].currNode());
     }
 
     @Override
-    public Edge next(Edge w) {
-        if(w == null) return null;
-        for(int i=w.edgeTo()+1;i<mark.length;i++){
-            if(matrix[w.edgeFrom()][i]!=0)
-                return new MEdge(w.edgeFrom(), i);
-        }
-        return null;
+    public Edge next(Edge e) {
+        vertex[e.edgeFrom()].setCurr(((LEdge)e).getItself());
+        vertex[e.edgeFrom()].next();
+        if(vertex[e.edgeFrom()].currValue()==null) return null; 
+        return new LEdge(e.edgeFrom(), ((int[])vertex[e.edgeFrom()].currValue())[0], 
+            vertex[e.edgeFrom()].currNode());
     }
 
     @Override
-    public boolean isEdge(Edge w) {
-        if(w == null) return false;
-        else return matrix[w.edgeFrom()][w.edgeTo()]!=0;
+    public boolean isEdge(Edge e){
+        if(e==null) return false;
+        vertex[e.edgeFrom()].setCurr(((LEdge)e).getItself());
+        if(!vertex[e.edgeFrom()].isInList()) return false;
+        return ((int[])vertex[e.edgeFrom()].currValue())[0] == e.edgeTo();
+
     }
 
     @Override
     public boolean isEdge(int i, int j) {
-        return matrix[i][j]!=0;
+        GraphList temp = vertex[i];
+        for(temp.setFirst();((temp.currValue()!=null)&&(((int[])temp.currValue())[0]<j));temp.next());
+        return (temp.currValue()!=null)&&(((int[])temp.currValue())[0]==j);
     }
 
     @Override
@@ -96,8 +97,13 @@ public class LGraph implements Graph{
             System.out.println("Connot set weight to 0");
             return;
         } 
-        if(matrix[i][j]==0) numEdge++;
-        matrix[i][j] = weight;
+        int[] currEdge = {j, weight};
+        if(isEdge(i, j))
+            vertex[i].setValue(currEdge);
+        else{
+            vertex[i].append(currEdge);
+            numEdge++;
+        }
     }
 
     @Override
@@ -107,37 +113,28 @@ public class LGraph implements Graph{
 
     @Override
     public void delEdge(Edge w) {
-        if(w!=null){
-            if(matrix[w.edgeFrom()][w.edgeTo()]!=0){
-                matrix[w.edgeFrom()][w.edgeTo()] = 0;
-                numEdge--;
-            }
-        }
-
+        if(w!=null)
+            delEdge(w.edgeFrom(), w.edgeTo());
     }
 
     @Override
     public void delEdge(int i, int j) {
-        if(matrix[i][j]!=0){
-            matrix[i][j] = 0;
+        if(isEdge(i, j)){
+            vertex[i].remove();
             numEdge--;
         }
     }
 
     @Override
-    public int weight(Edge w) {
-        if(w==null){
-            System.out.println("This edge is null");
-            return Integer.MAX_VALUE;
-        }
-        if(matrix[w.edgeFrom()][w.edgeTo()]==0) return Integer.MAX_VALUE;
-        else return matrix[w.edgeFrom()][w.edgeTo()];
+    public int weight(Edge e) {
+        if(isEdge(e)) return((int[])vertex[e.edgeFrom()].currValue())[1];
+        else return Integer.MAX_VALUE;
     }
 
     @Override
     public int weight(int i, int j) {
-        if(matrix[i][j]==0) return Integer.MAX_VALUE;
-        return matrix[i][j];
+        if(isEdge(i, j)) return((int[])vertex[i].currValue())[1];
+        else return Integer.MAX_VALUE;
     }
 
     @Override

@@ -4,6 +4,7 @@ public class LList implements List{
     private Node head;
     private Node tail;
     private int curLen = 0;
+    protected Node current;
 
     public LList(int size){
         setup();
@@ -14,13 +15,13 @@ public class LList implements List{
     }
 
     private void setup(){
-        tail = head = new Node(null);
+        tail = head = current = new Node(null);
     }
 
     @Override
     public void clear() {
         head.setNext(null);
-        tail = head;
+        current = tail = head;
         curLen = 0;
     }
 
@@ -132,5 +133,55 @@ public class LList implements List{
             for(int j=0; j<i;j++) curr = curr.next();
             return curr.getElem();
         }
+    }
+
+    //为current新增的方法
+    public void setFirst(){
+        current = head;
+    }
+
+    public void next(){
+        if(current!=null) current = current.next();
+    }
+
+    public void prev(){
+        if(current==null || current==head){
+            current = null;
+            return;
+        }
+        Node temp = head;
+        while(temp!=null && temp.next()!=current)
+            temp = temp.next();
+        current = temp;
+    }
+
+    public void setPos(int pos){
+        current = head;
+        for(int i=0;(current!=null)&&(i<pos);i++)
+            current = current.next();
+    }
+
+    public void setValue(Object it){
+        if(!isInList()){
+            System.out.println("current is not in list");
+            return;
+        }
+        current.next().setElem(it);
+    }
+
+    public Object currValue(){
+        if(!isInList()) return null;
+        return current.next().getElem();
+    }
+
+    public boolean isInList(){
+        return (current!=null) && (current.next()!=null);
+    }
+    public Object remove(){
+        if(!isInList()) return null;
+        Object it = current.next().getElem();
+        if(tail==current.next()) tail = current;
+        current.setNext(current.next().next());
+        return it;
     }
 }

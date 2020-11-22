@@ -1,5 +1,7 @@
 package graph;
 
+import list.*;
+import queue.AQueue;
 public class MGraph implements Graph{
     private int[][] matrix;
     private int numEdge;
@@ -29,6 +31,11 @@ public class MGraph implements Graph{
     public MGraph(int n){
         mark = new int[n];
         matrix = new int[n][n];
+        numEdge = 0;
+    }
+    public MGraph(int n, int[][] mat){
+        mark = new int[n];
+        matrix = mat;
         numEdge = 0;
     }
 
@@ -144,5 +151,34 @@ public class MGraph implements Graph{
     @Override
     public int getMark(int v) {
         return mark[v];
+    }
+
+
+
+    public static void main(String[] args)throws Exception{
+        int m = Integer.MAX_VALUE;
+        int[][] mat = {{0,10,3,20,0},
+                       {0,0,0,5,0},
+                       {0,2,0,0,15},
+                       {0,0,0,0,11},
+                       {0,0,0,0,0}};
+        MGraph g = new MGraph(5, mat);
+        // g.DFS(g);
+        // System.out.println("---------------");
+        // g.BFS(g, 4);
+        //g.topSort(g);
+        int[] dist = new int[g.numOfVertices()];
+        int[][] path = new int[g.numOfVertices()][g.numOfVertices()];
+        int[][] D = new int[g.numOfVertices()][g.numOfVertices()];
+        //GraphAlgor.dijkstra(g, 0, dist, path);
+        GraphAlgor.floyd(g, D, path);
+        for(int i=0;i<dist.length;i++)
+            for(int j=0;j<dist.length;j++){
+                System.out.print(path[i][j] + " ");
+                if(j==dist.length-1) System.out.println();
+            }
+        // System.out.println("---------------");
+        // for(int i=0;i<dist.length;i++)
+        //     System.out.println(path[i]);
     }
 }
