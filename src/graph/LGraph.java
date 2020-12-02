@@ -94,7 +94,7 @@ public class LGraph implements Graph{
     @Override
     public void setEdge(int i, int j, int weight) {
         if(weight==0){
-            System.out.println("Connot set weight to 0");
+            System.out.println("Cannot set weight to 0");
             return;
         } 
         int[] currEdge = {j, weight};

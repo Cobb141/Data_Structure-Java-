@@ -156,7 +156,6 @@ public class MGraph implements Graph{
 
 
     public static void main(String[] args)throws Exception{
-        int m = Integer.MAX_VALUE;
         int[][] mat = {{0,10,3,20,0},
                        {0,0,0,5,0},
                        {0,2,0,0,15},

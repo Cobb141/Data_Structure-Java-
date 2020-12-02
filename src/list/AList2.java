@@ -98,5 +98,11 @@ public class AList2 implements List2{
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public boolean isInList() {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
 }

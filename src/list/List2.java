@@ -13,5 +13,6 @@ public interface List2 {
     public void setValue(Object val);
     public Object currValue();
     public boolean isEmpty();
+    public boolean isInList();
     public void print();
 }
