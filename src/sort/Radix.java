@@ -18,9 +18,9 @@ public class Radix {
 
     @SuppressWarnings("unchecked")
     public static int[] radix(int[] arr){
-        AQueue<Integer>[] qs = new AQueue[10];
+        AQueue<Integer>[] buckets = new AQueue[10];
         for(int i=0;i<10;i++){
-            qs[i] = new AQueue<Integer>();
+            buckets[i] = new AQueue<Integer>();
         }
         int dig = digOfMax(arr);
         int num = 10;
@@ -32,13 +32,13 @@ public class Radix {
                     while(index>10)
                         index = index/10;
                 }
-                qs[index].enQueue(arr[j]);
+                buckets[index].enQueue(arr[j]);
             }
             num *= 10;
             int index2 = 0;
             for(int k=0;k<10;k++){
-                while(!qs[k].isEmpty()){
-                    arr[index2] = qs[k].deQueue();
+                while(!buckets[k].isEmpty()){
+                    arr[index2] = buckets[k].deQueue();
                     index2++;
                 }
             }
@@ -48,19 +48,19 @@ public class Radix {
 
     @SuppressWarnings("unchecked")
     public static String[] radix(String[] arr){
-        AQueue<String>[] qs = new AQueue[26];
+        AQueue<String>[] buckets = new AQueue[26];
         for(int i=0;i<26;i++){
-            qs[i] = new AQueue<String>();
+            buckets[i] = new AQueue<String>();
         }
         int dig = arr[0].length();
         for(int i=dig-1;i>=0;i--){
             for(int j=0;j<arr.length;j++){
-                qs[arr[j].charAt(i)-'a'].enQueue(arr[j]);
+                buckets[arr[j].charAt(i)-'a'].enQueue(arr[j]);
             }
             int index2 = 0;
             for(int k=0;k<26;k++){
-                while(!qs[k].isEmpty()){
-                    arr[index2] = qs[k].deQueue();
+                while(!buckets[k].isEmpty()){
+                    arr[index2] = buckets[k].deQueue();
                     index2++;
                 }
             }

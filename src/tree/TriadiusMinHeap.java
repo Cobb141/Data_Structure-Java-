@@ -15,7 +15,7 @@ public class TriadiusMinHeap {
     public int heapSize(){ return n; }
 
     public boolean isLeaf(int pos){
-        return (pos >= n/3) && (pos<n);
+        return (pos >= (n+1)/3) && (pos<n);
     }
 
     public int leftChild(int pos){
@@ -50,7 +50,7 @@ public class TriadiusMinHeap {
      }
 
      public void buildHeap(){
-         for(int i = n/2 - 1;i>=0;i--)
+         for(int i = (n+1)/3 - 1;i>=0;i--)
             siftdown(i);
      }
 

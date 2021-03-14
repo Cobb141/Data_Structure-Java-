@@ -116,4 +116,34 @@ public class GraphAlgor {
         }
     }
 
+    public static int prim(Graph g, int s, int[] dist){
+        int[] V = new int[g.numOfVertices()];
+        int cost = 0;
+        for(int i=0;i<g.numOfVertices();i++){
+            //dist[i] = Integer.MAX_VALUE;
+            dist[i] = g.weight(s, i);
+            V[i] = s;
+        }
+        dist[s] = 0;
+        V[s] = 0;
+        for(int i=0;i<g.numOfVertices();i++){
+            int v = minVertex(g, dist);
+            g.setMark(v, 1);
+            if(v!=s){
+                System.out.println("V" + V[v] + "-" + "V" + v + "=" + g.weight(V[v], v));
+                cost = cost + g.weight(V[v], v);
+            }
+            if(dist[v]==Integer.MAX_VALUE){
+                System.out.println("不存在MST");
+                return 0;
+            }
+            for(Edge w=g.first(v);g.isEdge(w);w=g.next(w))
+                if(dist[g.edgeTo(w)]>g.weight(w)){
+                    dist[g.edgeTo(w)] = g.weight(w);
+                    V[g.edgeTo(w)] = v;
+                }
+        }
+        return cost;
+    }
+
 }
