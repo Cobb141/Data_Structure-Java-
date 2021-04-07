@@ -2,14 +2,10 @@ package sort;
 
 //import java.util.*;
 public class Sort {
-    private static int cpNum = 0;
-    private static int swNum = 0;
-
     public static void swap(int[] list,int i,int j){
         int temp = list[i];
         list[i] = list[j];
         list[j] = temp;
-        swNum++;
     }
 
     public static void printList(int[] list){
@@ -23,7 +19,6 @@ public class Sort {
             for(j=list.length-1;j>i;j--)
                 if(list[j]<list[j-1]){
                     swap(list,j,j-1);
-                    cpNum++;//------------------------
                 }
     }
     //简单选择排序
@@ -33,7 +28,6 @@ public class Sort {
             for(int j=array.length-1;j>i;j--){
                 if(array[lowIndex]>array[j]){
                     lowIndex = j;
-                    cpNum++;//------------------------
                 } 
             }
             swap(array,i,lowIndex);
@@ -44,7 +38,6 @@ public class Sort {
         for(int i=1;i<list.length;i++)
             for(int j=i;(j>0)&&(list[j]<list[j-1]);j--){
                 swap(list,j,j-1);
-                cpNum++;//------------------------
             }
     }
 
@@ -75,8 +68,8 @@ public class Sort {
     }
     public static int partion(int[] array,int l,int r,int pivot){
         do{
-            while(array[++l]<pivot) cpNum++;
-            while((r!=0)&&(array[--r]>pivot)) cpNum++;
+            while(array[++l]<pivot);
+            while((r!=0)&&(array[--r]>pivot));
             swap(array,l,r);
         }while(l<r);
         swap(array,l,r);
@@ -116,25 +109,20 @@ public class Sort {
         for(int curr=left;curr<=right;curr++){
             if(leftcurr==mid+1){
                 array[curr] = temp[rightcurr++];
-                cpNum++;
             } //left越界，则把右子序列剩余的部分（right之后）接到归并序列之后
             else if(rightcurr>right){
                 array[curr] = temp[leftcurr++];
-                cpNum++;
             } //right越界，则把左子序列剩余的部分（left之后）接到归并序列之后
             else if(temp[leftcurr]<temp[rightcurr]){
                 array[curr] = temp[leftcurr++];
-                swNum++;
-                cpNum++;
             } 
             else{
                 array[curr] = temp[rightcurr++];
-                swNum++;
-                cpNum++;
             } 
         }
     }
 
+    //归并排序：当子数组较小时使用插入排序
     public static void mergeSort2(int[] array, int[] temp, int left, int right){
         int mid;
         mid = (left + right)/2;
@@ -155,99 +143,32 @@ public class Sort {
             else array[curr] = temp[rightcurr++];
         }
     }
+
+    //归并排序：一种简洁的实现方式
+    public static void mergeSort3(int[] array, int[] temp, int left, int right){
+        if(right-left==1) return;  //递归终止条件
+        int mid = left + (right - left)/2;
+        int leftcurr = left;
+        int rightcurr = mid;
+        int index = left;
+        mergeSort3(array, temp, left, mid);
+        mergeSort3(array, temp, mid, right);
+        //下面的循环判断条件十分巧妙，简化了实现
+        while(leftcurr<mid || rightcurr<right){
+            if(rightcurr>=right || (leftcurr<mid && array[leftcurr]<array[rightcurr]))
+                temp[index++] = array[leftcurr++];  //归并左子序列
+            else
+                temp[index++] = array[rightcurr++];  //归并右子序列
+        }
+        for(int i=left;i<right;i++) //将temp复制到原数组
+            array[i] = temp[i];
+    }
+
     public static void main(String[] args){
-        long[] time = new long[100];
-        long[] time2 = new long[100];
-        long[] time3 = new long[100];
-        long[] time4 = new long[100];
-        long[] time5 = new long[100];
-        int k=0;
-        for(int len=100;len<=10000;len=len+100){
-            int[] list = new int[len];
-            int[] list2 = new int[len];
-            int[] list3 = new int[len];
-            int[] list4 = new int[len];
-            int[] list5 = new int[len];
-            //int[] list2 = new int[len];
-            for(int i=0;i<len;i++){
-                list[i] = (int)(Math.random()*10000);
-            }
-            for(int i=0;i<len;i++){
-                list2[i] = list[i];
-                list3[i] = list[i];
-                list4[i] = list[i];
-                list5[i] = list[i];
-            }
-            /*
-            for(int i=0;i<len;i++){
-                list2[i] = list[i];
-            }
-            for(int i=0;i<len/2;i++){
-                swap(list2,i,len-i-1);
-            }
-            */
-        
-            long start = System.currentTimeMillis( );
-            bubbleSort(list);
-            long end = System.currentTimeMillis( );
-            time[k] = end - start;
-            swNum = 0;
-
-            long start2 = System.currentTimeMillis( );
-            selSort(list2);
-            long end2 = System.currentTimeMillis( );
-            time2[k] = end2 - start2;
-            swNum  = 0;
-
-            long start3 = System.currentTimeMillis( );
-            insSort(list3);
-            long end3 = System.currentTimeMillis( );
-            time3[k] = end3 - start3;
-            swNum = 0;
-
-            long start4 = System.currentTimeMillis( );
-            qsort(list4,0,len-1);
-            long end4 = System.currentTimeMillis( );
-            time4[k] = end4 - start4;
-            swNum = 0;
-
-            int[] temp2 = new int[len];
-            long start5 = System.currentTimeMillis( );
-            mergeSort(list5,temp2,0,len-1);
-            long end5 = System.currentTimeMillis( );
-            time5[k] = end5 - start5;
-            swNum = 0;
-
-            k++;
-        }
-        for(int i =0;i<time.length;i++) System.out.print(time[i] + " ");
-        System.out.println("-----------");
-
-        for(int i =0;i<time2.length;i++) System.out.print(time2[i] + " ");
-        System.out.println("-----------");
-
-        for(int i =0;i<time3.length;i++) System.out.print(time3[i] + " ");
-        System.out.println("-----------");
-
-        for(int i =0;i<time4.length;i++) System.out.print(time4[i] + " ");
-        System.out.println("-----------");
-
-        for(int i =0;i<time5.length;i++) System.out.print(time5[i] + " ");
-        System.out.println();
-        
-
-        /*
-        int len = 100;
-        int[] list = new int[len];
-        for(int i=0;i<len;i++){
-            list[i] = (int)(Math.random()*10000);
-        }
-        //printList(list);
-        long start = System.currentTimeMillis( );
-        bubbleSort(list);
-        long end = System.currentTimeMillis( );
-        System.out.println(end-start);
-        //printList(list);
-        */
+        int[] a = {3,6,2,8,5,0,9,-1,20,-102,666,89};
+        int[] temp = new int[a.length];
+        qsort(a, 0, a.length-1);
+        for(int i = 0;i<a.length;i++)
+            System.out.print(a[i] + " ");
     }
 }
